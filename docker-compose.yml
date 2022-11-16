@@ -1,0 +1,46 @@
+version: "3"
+services:
+  python:
+    build: .
+    container_name: scrapy
+    tty: true
+    # depends_on:
+    #   - dynamodb
+    #   - splash
+    environment:
+      - SPLASH_URL=http://splash:8050
+      - GET_ONLY_LATEST=true
+      - DYNAMODB_HOST=http://dynamodb:8000
+      - BET_UNIT=100
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+  # splash:
+  #   restart: always
+  #   image: scrapinghub/splash
+  #   container_name: splash
+  #   ports:
+  #     - "5023:5023"
+  #     - "8050:8050"
+  #     - "8051:8051"
+  #   environment:
+  #     VIRTUAL_HOST: splash.localhost
+  # dynamodb:
+  #   image: amazon/dynamodb-local:latest
+  #   user: root
+  #   command: -jar DynamoDBLocal.jar -sharedDb -dbPath /data
+  #   volumes:
+  #     - dynamodb-local-data:/data
+  #   ports:
+  #     - 8000:8000
+  # dynamodb-admin:
+  #   image: aaronshaf/dynamodb-admin:latest
+  #   environment:
+  #     - DYNAMO_ENDPOINT=dynamodb:8000
+  #   ports:
+  #     - 8001:8001
+  #   depends_on:
+  #     - dynamodb
+volumes:
+  dynamodb-local-data:

@@ -1,0 +1,29 @@
+name: CrawlOddsHistory
+
+on:
+  schedule:
+    - cron: "0 0/3 * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [bet]
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install libgomp1
+        run: sudo apt-get install libgomp1
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run Answer Cralwer
+        run: scrapy crawl odds_history

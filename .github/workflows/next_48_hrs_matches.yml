@@ -1,0 +1,60 @@
+name: GetNext24HrsMatches
+
+on:
+  schedule:
+    - cron: "0 0/3 * * *"
+  workflow_dispatch:
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install libgomp1
+        run: sudo apt-get install libgomp1
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run Answer Cralwer
+        run: scrapy crawl answer
+      - name: Join CSV
+        run: python join_csv.py
+      - name: Update OLS Model
+        run: python analyze.py
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_FOR_PINNACLE }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_FOR_PINNACLE }}
+          aws-region: ap-northeast-1
+      - name: Run Matches Cralwer
+        run: scrapy crawl matches
+        env:
+          STAKE: ${{ secrets.STAKE }}
+          API_BETTING_ENDPOINT: ${{ secrets.API_BETTING_ENDPOINT }}
+          PINNACLE_USERNAME: ${{ secrets.PINNACLE_USERNAME }}
+          PINNACLE_PASSWORD: ${{ secrets.PINNACLE_PASSWORD }}
+      - name: git setting
+        run: |
+          git config --local user.email ${{ secrets.EMAIL }}
+          git config --local user.name ${{ secrets.USERNAME }}
+      - name: Commit files
+        run: |
+          git add .
+          git commit -m "Update Match Schedules" -a
+          git pull origin main --rebase
+          git push origin main
+      # - name: dispatch update-packages
+      #   uses: peter-evans/repository-dispatch@v1
+      #   with:
+      #     repository: ebijun1007/blog_luden
+      #     token: ${{ secrets.PERSONAL_TOKEN }}
+      #     event-type: build

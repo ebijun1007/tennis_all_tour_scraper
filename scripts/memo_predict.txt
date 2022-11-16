@@ -1,0 +1,21 @@
+条件
+roi_home - roi_enemy > 1 and h2h_home - h2h_away >= 1
+結果
+ROI: -5238.327600000008
+試合数: 5001
+ROI / 試合数: -1.0474560287942427
+
+roi_home - roi_enemy > 1 and h2h_home - h2h_away >= 3
+ROI: 163.39819999999955
+試合数: 718
+ ROI / 試合数: 0.22757409470752027
+
+return roi_home - roi_enemy > 1 and roi_enemy < -5
+ROI: -11790.11819999992
+試合数: 11507
+ ROI / 試合数: -1.0246039975666916
+
+roi_home - roi_enemy > 1 and roi_enemy <= -10
+ROI: -6310.939000000002
+試合数: 4786
+ROI / 試合数: -1.318624947764313

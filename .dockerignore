@@ -1,0 +1,14 @@
+data/**/*
+docker/**/*
+backup/**/*
+scripts/**/*
+.git*/**/*
+.scrapy/**/*
+.vscode/**/*
+calc_roi*
+docker*
+Docker*
+go*
+*.csv
+*.json
+*.png

@@ -1,0 +1,1 @@
+docker run --rm -it -v ${PWD}:/app tennis_crawler $1
