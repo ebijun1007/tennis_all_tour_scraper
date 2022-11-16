@@ -29,19 +29,8 @@ jobs:
         run: python join_csv.py
       - name: Update OLS Model
         run: python analyze.py
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_FOR_PINNACLE }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_FOR_PINNACLE }}
-          aws-region: ap-northeast-1
       - name: Run Matches Cralwer
         run: scrapy crawl matches
-        env:
-          STAKE: ${{ secrets.STAKE }}
-          API_BETTING_ENDPOINT: ${{ secrets.API_BETTING_ENDPOINT }}
-          PINNACLE_USERNAME: ${{ secrets.PINNACLE_USERNAME }}
-          PINNACLE_PASSWORD: ${{ secrets.PINNACLE_PASSWORD }}
       - name: git setting
         run: |
           git config --local user.email ${{ secrets.EMAIL }}
@@ -50,11 +39,5 @@ jobs:
         run: |
           git add .
           git commit -m "Update Match Schedules" -a
-          git pull origin main --rebase
-          git push origin main
-      # - name: dispatch update-packages
-      #   uses: peter-evans/repository-dispatch@v1
-      #   with:
-      #     repository: ebijun1007/blog_luden
-      #     token: ${{ secrets.PERSONAL_TOKEN }}
-      #     event-type: build
+          git pull origin master --rebase
+          git push origin master
