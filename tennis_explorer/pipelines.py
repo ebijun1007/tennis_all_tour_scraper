@@ -28,11 +28,11 @@ class PredictionsPipeline:
 
 class TennisExplorerPipeline:
     def process_item(self, item, spider):
-        # if item["strong_predict"]:
-        #     try:
-        #         self.place_bet(item)
-        #     except Exception as e:
-        #         print(e)
+        if item["strong_predict"]:
+            try:
+                self.place_bet(item)
+            except Exception as e:
+                print(e)
         return item
 
     def close_spider(self, spider):
