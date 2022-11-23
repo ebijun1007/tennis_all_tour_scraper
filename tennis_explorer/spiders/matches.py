@@ -60,7 +60,8 @@ class MatchesExplorer(scrapy.Spider):
         # match_list = list(filter(lambda name: name not in ['\xa0'], table.css(
         #     'td a::text').getall()))
         self.crawler.stats.set_value('match_list', match_list)
-        return list(filter(lambda name: name not in ['Davis Cup'], match_list))
+        return match_list
+        # return list(filter(lambda name: name not in ['Davis Cup'], match_list))
 
     def parse_todays_match(self, response):
         tour_type = "wta" if "wta" in response.url else "atp"
