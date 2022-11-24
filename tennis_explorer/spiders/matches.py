@@ -94,12 +94,17 @@ class MatchesExplorer(scrapy.Spider):
             "/html/body/div[1]/div[1]/div/div[3]/div[3]/div[1]/text()[2]").get()
         match_round = match_detail.split(',')[1].lstrip()
         surface = match_detail.split(',')[2].lstrip()
+        if surface == "-":
+            surface = "hard"
         H2H = response.xpath('//*[@id="center"]/h2[1]').get()
         odds = self.get_odds(response.css('div#oddsMenu-1-data table'))
         player1 = {}
         player1["H2H"] = get_integer(H2H.split(
             ":")[-1].split("-")[0])[0] if len(H2H.split(":")) == 2 else 0
-        player1["odds"] = odds[0]
+        try:
+            player1["odds"] = odds[0]
+        except IndexError:
+            return
         player1["latest_win"] = len(response.css('table.result.mutual')[
             0].css('td.icon-result.win'))
 
@@ -266,17 +271,21 @@ class MatchesExplorer(scrapy.Spider):
 
         wl_table = soup.find("div", {"id": "balMenu-1-data"})
         heads = [x.text for x in wl_table.find('tr').find_all('th')]
-        surface_index = heads.index(surface.capitalize())
         year_row = wl_table.find('tbody').find_all('tr')[0]
         year_wl = year_row.find_all(
             'td')[1].text if year_row.find_all('td')[1].text != "-" else "0/0"
-        year_surface_wl = year_row.find_all('td')[surface_index].text if year_row.find_all(
-            'td')[surface_index].text != "-" else "0/0"
         career_row = wl_table.find('tfoot').find('tr')
         career_wl = career_row.find_all('td')[1].text if career_row.find_all('td')[
             1].text != "-" else "0/0"
-        career_surface_wl = career_row.find_all('td')[surface_index].text if career_row.find_all(
-            'td')[surface_index].text != "-" else "0/0"
+        try:
+            surface_index = heads.index(surface.capitalize())
+            year_surface_wl = year_row.find_all('td')[surface_index].text if year_row.find_all(
+                'td')[surface_index].text != "-" else "0/0"
+            career_surface_wl = career_row.find_all('td')[surface_index].text if career_row.find_all(
+                'td')[surface_index].text != "-" else "0/0"
+        except:
+            year_surface_wl = "0/0"
+            career_surface_wl = "0/0"
 
         year_total_win = year_wl.split('/')[0]
         year_total_lose = year_wl.split('/')[1]
