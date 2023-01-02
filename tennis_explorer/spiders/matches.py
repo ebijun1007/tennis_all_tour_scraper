@@ -47,8 +47,8 @@ class MatchesExplorer(scrapy.Spider):
             atp_competitions + wta_competitions))
         yield scrapy.Request(url=self.TODAYS_MATCH[0], callback=self.parse_todays_match, meta={"dont_cache": True}, priority=100)
         yield scrapy.Request(url=self.TODAYS_MATCH[1], callback=self.parse_todays_match, meta={"dont_cache": True}, priority=10)
-        yield scrapy.Request(url=self.TODAYS_MATCH[2], callback=self.parse_todays_match, meta={"dont_cache": True}, priority=1)
-        yield scrapy.Request(url=self.TODAYS_MATCH[3], callback=self.parse_todays_match, meta={"dont_cache": True}, priority=0)
+        # yield scrapy.Request(url=self.TODAYS_MATCH[2], callback=self.parse_todays_match, meta={"dont_cache": True}, priority=1)
+        # yield scrapy.Request(url=self.TODAYS_MATCH[3], callback=self.parse_todays_match, meta={"dont_cache": True}, priority=0)
 
     # get only main tournaments from list. exclude lower level tournaments
     def get_main_tournaments(self, table):
