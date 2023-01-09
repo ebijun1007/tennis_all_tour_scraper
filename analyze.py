@@ -44,6 +44,8 @@ def calc_history():
             continue
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
+    ax.set_ylabel("ROI(units)")
+    ax.set_xlabel("DATE")
     ax.plot(plot_x, plot_y2)
     plt.savefig("roi")
 
