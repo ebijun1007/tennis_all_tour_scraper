@@ -3,6 +3,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+from datetime import datetime
 
 
 def calc_history():
@@ -13,6 +14,10 @@ def calc_history():
     strong_sum = 0.0
     strong_predict_roi = 0
     for csv_data in sorted(os.listdir("data")):
+        if ".csv" not in csv_data:
+            continue
+        if "next_48_hours_match.csv" == csv_data:
+            continue
         try:
             df = pd.read_csv(f'./data/{csv_data}')
             win = len(
@@ -26,17 +31,19 @@ def calc_history():
                 strong_predict_df["prediction_roi"].sum(), 2)
             print(
                 f'{csv_data}: win:{win} lose:{lose} win_rate: {round(win / (win + lose) ,2)} roi:{roi} strong_predict_roi:{strong_predict_roi}')
+            print(strong_predict_roi)
             sum += float(roi)
             strong_sum += float(strong_predict_roi)
-
-            plot_x.append(csv_data)
+            x_label = csv_data.replace(".csv", "").split("-")
+            plot_x.append(datetime(
+                int(x_label[0]), int(x_label[1]), int(x_label[2])))
             plot_y.append(sum)
             plot_y2.append(strong_sum)
         except Exception as e:
+            print(e)
             continue
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
-    ax.plot(plot_x, plot_y)
     ax.plot(plot_x, plot_y2)
     plt.savefig("roi")
 
@@ -55,6 +62,8 @@ def emurate():
         win_total_odds = 0
         winner_1 = winner_2 = 0
         for _, row in df.iterrows():
+            if not row[f"strong_predict"]:
+                continue
             unit = balance / 25
             winner = int(row["winner"])
             if (math.isnan(row[f"player1_elo"]) or math.isnan(row[f"player2_elo"])):
