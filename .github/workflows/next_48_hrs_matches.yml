@@ -53,3 +53,9 @@ jobs:
           git commit -m "Update Match Schedules" -a
           git pull origin master --rebase
           git push origin master
+      - name: dispatch update-packages
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          repository: ebijun1007/blog_luden
+          token: ${{ secrets.PERSONAL_TOKEN }}
+          event-type: build
